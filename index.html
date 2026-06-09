@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="dashboard-grid">
+
+    <div class="stats-card">
+        <h3>📦 Total Barang</h3>
+        <h1>{{ total_barang }}</h1>
+    </div>
+
+    <div class="stats-card">
+        <h3>🗂️ Total Kategori</h3>
+        <h1>{{ kategori }}</h1>
+    </div>
+
+    <div class="stats-card">
+        <h3>📍 Total Lokasi</h3>
+        <h1>{{ lokasi }}</h1>
+    </div>
+
+</div>
+
+<div class="glass-card">
+
+    <div class="header-section">
+
+        <h2>Daftar Inventaris</h2>
+
+        <a href="{{ url_for('add_item') }}"
+           class="btn">
+            + Tambah Barang
+        </a>
+
+    </div>
+
+    <form method="GET">
+
+        <input type="text"
+               name="search"
+               placeholder="🔍 Cari barang..."
+               class="search-box">
+
+    </form>
+
+    {% if items %}
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nama</th>
+                <th>Kategori</th>
+                <th>Jumlah</th>
+                <th>Lokasi</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in items %}
+
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.nama_barang }}</td>
+                <td>{{ item.kategori }}</td>
+                <td>{{ item.jumlah }}</td>
+                <td>{{ item.lokasi }}</td>
+
+                <td>
+
+                    <a href="{{ url_for(
+                    'edit_item',
+                    id=item.id) }}"
+                    class="edit-btn">
+
+                        Edit
+
+                    </a>
+
+                    <a href="{{ url_for(
+                    'delete_item',
+                    id=item.id) }}"
+                    class="delete-btn">
+
+                        Hapus
+
+                    </a>
+
+                </td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <div class="empty-state">
+        <h2>📦</h2>
+        <p>Belum ada data inventaris</p>
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
