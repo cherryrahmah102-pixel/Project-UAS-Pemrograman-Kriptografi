@@ -1,1 +1,6 @@
-
+Flask
+gunicorn
+Flask-SQLAlchemy
+cryptography
+qrcode
+Pillow
