@@ -100,6 +100,7 @@ def generate_pdf_data(generate_pdf=False):
         )
 
         if generate_pdf:
+
             pdf_path = "static/generated_pdf/inventory_report.pdf"
 
             doc = SimpleDocTemplate(
@@ -110,16 +111,23 @@ def generate_pdf_data(generate_pdf=False):
             styles = getSampleStyleSheet()
             elements = []
 
+            # ===== TITLE =====
+            title_style = styles['Title']
+            title_style.textColor = colors.HexColor("#ff1493")
+
             title = Paragraph(
                 "Laporan Data Inventaris Barang",
-                styles['Title']
+                title_style
             )
 
             elements.append(title)
-            elements.append(Spacer(1, 10))
+            elements.append(Spacer(1, 20))
 
+            # ===== TABLE =====
             table_data = [
-                ["ID", "Nama Barang", "Kategori", "Jumlah", "Lokasi"]
+                ["ID", "Nama Barang",
+                 "Kategori", "Jumlah",
+                 "Lokasi"]
             ]
 
             for item in books_data:
@@ -131,31 +139,83 @@ def generate_pdf_data(generate_pdf=False):
                     item["lokasi"]
                 ])
 
-            table = Table(table_data)
+            table = Table(
+                table_data,
+                colWidths=[40, 120, 90, 70, 100]
+            )
 
             table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.pink),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-                ('GRID', (0, 0), (-1, -1), 1, colors.black)
+
+                ('BACKGROUND',
+                 (0, 0), (-1, 0),
+                 colors.HexColor("#ff69b4")),
+
+                ('TEXTCOLOR',
+                 (0, 0), (-1, 0),
+                 colors.white),
+
+                ('FONTNAME',
+                 (0, 0), (-1, 0),
+                 'Helvetica-Bold'),
+
+                ('BACKGROUND',
+                 (0, 1), (-1, -1),
+                 colors.HexColor("#ffe4ef")),
+
+                ('GRID',
+                 (0, 0), (-1, -1),
+                 1, colors.black),
+
+                ('ALIGN',
+                 (0, 0), (-1, -1),
+                 'CENTER'),
+
+                ('BOTTOMPADDING',
+                 (0, 0), (-1, 0),
+                 12)
             ]))
 
             elements.append(table)
-            elements.append(Spacer(1, 10))
+            elements.append(Spacer(1, 25))
+
+            # ===== HASH =====
+            heading_style = styles['Heading2']
+            heading_style.textColor = colors.HexColor("#ff1493")
 
             elements.append(
                 Paragraph(
-                    f"<b>SHA-256 Hash:</b> {sha256_hash}",
-                    styles['BodyText']
+                    "SHA-256 Hash",
+                    heading_style
                 )
             )
 
             elements.append(
                 Paragraph(
-                    f"<b>Digital Signature:</b> {signature_hex[:100]}...",
+                    sha256_hash,
                     styles['BodyText']
                 )
             )
 
+            elements.append(Spacer(1, 15))
+
+            # ===== SIGNATURE =====
+            elements.append(
+                Paragraph(
+                    "Digital Signature",
+                    heading_style
+                )
+            )
+
+            elements.append(
+                Paragraph(
+                    signature_hex[:120] + "...",
+                    styles['BodyText']
+                )
+            )
+
+            elements.append(Spacer(1, 15))
+
+            # ===== TIMESTAMP =====
             elements.append(
                 Paragraph(
                     f"<b>Timestamp:</b> {timestamp}",
@@ -163,10 +223,27 @@ def generate_pdf_data(generate_pdf=False):
                 )
             )
 
-            elements.append(Spacer(1, 10))
+            elements.append(Spacer(1, 20))
+
+            # ===== QR =====
             elements.append(
-                Image(qr_path, width=120, height=120)
+                Paragraph(
+                    "QR Code Validasi",
+                    heading_style
+                )
             )
+
+            elements.append(
+                Spacer(1, 10)
+            )
+
+            qr_img = Image(
+                qr_path,
+                width=150,
+                height=150
+            )
+
+            elements.append(qr_img)
 
             doc.build(elements)
 
