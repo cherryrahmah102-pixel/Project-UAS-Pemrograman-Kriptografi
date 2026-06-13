@@ -178,53 +178,85 @@ def generate_pdf_data(generate_pdf=False):
             elements.append(table)
             elements.append(Spacer(1, 25))
 
-            # ===== HASH =====
-            heading_style = styles['Heading2']
-            heading_style.textColor = colors.HexColor("#ff1493")
+           # ===== HASH BOX =====
+hash_box = Table([
+    ["SHA-256 Hash"],
+    [sha256_hash[:60] + "..."]
+])
 
-            elements.append(
-                Paragraph(
-                    "SHA-256 Hash",
-                    heading_style
-                )
-            )
+hash_box.setStyle(TableStyle([
+    ('BACKGROUND', (0, 0), (-1, 0),
+     colors.HexColor("#ff69b4")),
 
-            elements.append(
-                Paragraph(
-                    sha256_hash,
-                    styles['BodyText']
-                )
-            )
+    ('TEXTCOLOR', (0, 0), (-1, 0),
+     colors.white),
 
-            elements.append(Spacer(1, 15))
+    ('BACKGROUND', (0, 1), (-1, -1),
+     colors.HexColor("#ffe4ef")),
 
-            # ===== SIGNATURE =====
-            elements.append(
-                Paragraph(
-                    "Digital Signature",
-                    heading_style
-                )
-            )
+    ('BOX', (0, 0), (-1, -1),
+     1, colors.pink),
 
-            elements.append(
-                Paragraph(
-                    signature_hex[:120] + "...",
-                    styles['BodyText']
-                )
-            )
+    ('FONTNAME', (0, 0), (-1, 0),
+     'Helvetica-Bold')
+]))
 
-            elements.append(Spacer(1, 15))
+elements.append(hash_box)
+elements.append(Spacer(1, 15))
 
-            # ===== TIMESTAMP =====
-            elements.append(
-                Paragraph(
-                    f"<b>Timestamp:</b> {timestamp}",
-                    styles['BodyText']
-                )
-            )
 
-            elements.append(Spacer(1, 20))
+# ===== SIGNATURE BOX =====
+signature_box = Table([
+    ["Digital Signature"],
+    [signature_hex[:80] + "..."]
+])
 
+signature_box.setStyle(TableStyle([
+    ('BACKGROUND', (0, 0), (-1, 0),
+     colors.HexColor("#ff69b4")),
+
+    ('TEXTCOLOR', (0, 0), (-1, 0),
+     colors.white),
+
+    ('BACKGROUND', (0, 1), (-1, -1),
+     colors.HexColor("#ffe4ef")),
+
+    ('BOX', (0, 0), (-1, -1),
+     1, colors.pink),
+
+    ('FONTNAME', (0, 0), (-1, 0),
+     'Helvetica-Bold')
+]))
+
+elements.append(signature_box)
+elements.append(Spacer(1, 15))
+
+
+# ===== TIMESTAMP BOX =====
+timestamp_box = Table([
+    ["Timestamp"],
+    [timestamp]
+])
+
+timestamp_box.setStyle(TableStyle([
+    ('BACKGROUND', (0, 0), (-1, 0),
+     colors.HexColor("#ff69b4")),
+
+    ('TEXTCOLOR', (0, 0), (-1, 0),
+     colors.white),
+
+    ('BACKGROUND', (0, 1), (-1, -1),
+     colors.HexColor("#ffe4ef")),
+
+    ('BOX', (0, 0), (-1, -1),
+     1, colors.pink),
+
+    ('FONTNAME', (0, 0), (-1, 0),
+     'Helvetica-Bold')
+]))
+
+elements.append(timestamp_box)
+elements.append(Spacer(1, 20))
             # ===== QR =====
             elements.append(
                 Paragraph(
